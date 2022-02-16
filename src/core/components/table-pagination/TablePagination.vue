@@ -2,11 +2,10 @@
   <div class="d-flex justify-content-between table-pagination">
     <b-form-select
       class="per-page-select mr-2"
-      v-model="perPage"
+      v-model="localePerPage"
       :options="perPageOptions"
       @change="onPaginationChange"
-    >
-    </b-form-select>
+    />
     <div v-if="totalRows > 0">
       Displaying <b>{{ from }}</b> - <b>{{ Math.min(to, totalRows) }}</b> out of
       <b>{{ totalRows }}</b>
@@ -15,14 +14,16 @@
       class="mb-0"
       v-model="currentPage"
       :total-rows="totalRows"
-      :per-page="perPage"
+      :per-page="localePerPage"
       @input="onPaginationChange"
-    >
-    </b-pagination>
+    />
   </div>
 </template>
 
 <script>
+import { createNamespacedHelpers } from "vuex";
+const { mapState, mapActions } = createNamespacedHelpers("users");
+
 export default {
   name: "TablePagination",
   props: {
@@ -33,23 +34,34 @@ export default {
   },
   data() {
     return {
-      perPage: 50,
+      localePerPage: 50,
       currentPage: 1,
-      perPageOptions: [1, 10, 20, 50, 100],
+      perPageOptions: [1, 5, 10, 20, 50, 100],
     };
   },
   computed: {
+    ...mapState(["perPage"]),
     from() {
-      return (this.currentPage - 1) * this.perPage + 1;
+      return (this.currentPage - 1) * this.localePerPage + 1;
     },
     to() {
-      return this.currentPage * this.perPage;
+      return this.currentPage * this.localePerPage;
+    },
+  },
+  watch: {
+    perPage() {
+      this.localePerPage = this.perPage;
     },
   },
   methods: {
+    ...mapActions(["changePerPage"]),
     onPaginationChange() {
-      this.$emit("on-pagination-change", this.perPage, this.currentPage);
+      this.changePerPage(this.localePerPage);
+      this.$emit("on-pagination-change", this.currentPage);
     },
+  },
+  mounted() {
+    this.localePerPage = this.perPage;
   },
 };
 </script>

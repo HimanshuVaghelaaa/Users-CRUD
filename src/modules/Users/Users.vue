@@ -8,7 +8,7 @@
         </b-button>
       </div>
     </b-card-header>
-    <b-card-body class="users-card-body pr-2 pl-2 pt-2">
+    <b-card-body class="users-card-body pr-3 pl-3 pt-3">
       <users-table
         :fields="fields"
         :items="users"
@@ -47,7 +47,12 @@ export default {
     onCreateUserClick() {
       this.showUserModal();
     },
-    onEditUserClick() {},
+    onEditUserClick(item) {
+      this.$router.push({
+        name: "updateUser",
+        params: { userUuid: item.uuid },
+      });
+    },
     async onDeleteUserClick() {
       const confirm = await this.$confirm(
         "Are you sure you want to delete following user?",

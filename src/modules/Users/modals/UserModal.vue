@@ -15,7 +15,6 @@
                 <input-widget
                   :model="model"
                   attribute="name"
-                  :autofocus="true"
                   :placeholder="false"
                 />
               </div>
@@ -92,7 +91,9 @@ export default {
     onSubmit() {},
     onHideModal() {
       this.hideUserModal();
-      this.model = new UserModel();
+      setTimeout(() => {
+        this.model = new UserModel();
+      }, 500);
     },
   },
 };

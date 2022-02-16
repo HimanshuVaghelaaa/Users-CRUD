@@ -41,6 +41,8 @@
 import TablePagination from "../../../core/components/table-pagination/TablePagination";
 import NoContent from "../../../core/components/no-content/NoContent";
 import _ from "lodash";
+import { createNamespacedHelpers } from "vuex";
+const { mapState } = createNamespacedHelpers("users");
 
 export default {
   name: "UsersTable",
@@ -58,8 +60,10 @@ export default {
   data() {
     return {
       localItems: [],
-      perPage: null,
     };
+  },
+  computed: {
+    ...mapState(["perPage"]),
   },
   watch: {
     items() {
@@ -71,24 +75,26 @@ export default {
     },
   },
   methods: {
-    onEditUserClick() {
-      this.$emit("on-edit-click");
+    onEditUserClick(item) {
+      this.$emit("on-edit-click", item);
     },
-    onDeleteUserClick() {
-      this.$emit("on-delete-click");
+    onDeleteUserClick(item) {
+      this.$emit("on-delete-click", item);
     },
-    onPaginationChange(perPage, currentPage) {
-      this.perPage = perPage;
+    onPaginationChange(currentPage) {
       this.localItems = this.items.filter((item, index) => {
         return (
-          index >= (currentPage - 1) * perPage &&
-          index <= currentPage * perPage - 1
+          index >= (currentPage - 1) * this.perPage &&
+          index <= currentPage * this.perPage - 1
         );
       });
     },
   },
   mounted() {
     this.localItems = _.cloneDeep(this.items);
+    if (this.perPage) {
+      this.onPaginationChange(this.perPage, 1);
+    }
   },
 };
 </script>
@@ -107,7 +113,7 @@ export default {
           //position: sticky;
           //z-index: 10;
           //top: 0;
-          padding: 6px;
+          // padding: 6px;
           white-space: nowrap;
           &:focus {
             outline: none;
@@ -118,7 +124,7 @@ export default {
     > tbody {
       > tr {
         > td {
-          padding: 8px;
+          // padding: 8px;
           max-width: 150px;
           white-space: nowrap;
           overflow: hidden;

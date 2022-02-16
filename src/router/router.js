@@ -1,28 +1,34 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import Vue from "vue";
+import VueRouter from "vue-router";
 import DefaultLayout from "../core/components/layout/DefaultLayout";
 import Users from "../modules/Users/Users";
+import EditUser from "../modules/Users/EditUser";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   routes: [
     {
-      path: '/',
-      name: 'dashboard',
+      path: "/",
+      name: "dashboard",
       component: DefaultLayout,
-      redirect: '/users',
-      meta: {requiresAuth: true},
+      redirect: "/users",
+      meta: { requiresAuth: true },
       children: [
         {
-          path: 'users',
-          name: 'users',
+          path: "users",
+          name: "users",
           component: Users,
         },
-      ]
-    }
-  ]
-})
+        {
+          path: "users/update/:userUuid",
+          name: "updateUser",
+          component: EditUser,
+        },
+      ],
+    },
+  ],
+});
 
 export default router;
