@@ -8,42 +8,14 @@
         </b-button>
       </div>
     </b-card-header>
-    <b-card-body class="users-card-body">
-      <no-content :show="!users.length" />
-      <b-table
-        v-if="users.length"
-        class="mr-3 ml-3 mb-0 pb-0"
-        responsive="sm"
+    <b-card-body class="users-card-body pr-2 pl-2 pt-2">
+      <users-table
         :fields="fields"
         :items="users"
-        striped
+        @on-delete-click="onDeleteUserClick"
+        @on-edit-click="onEditUserClick"
       >
-        <template v-slot:cell(actions)="{ item }">
-          <b-button
-            variant="success"
-            class="mr-1"
-            size="sm"
-            @click="onEditUserClick(item)"
-          >
-            Edit
-          </b-button>
-          <b-button
-            variant="danger"
-            class="mr-1"
-            size="sm"
-            @click="onDeleteUserClick(item)"
-          >
-            Delete
-          </b-button>
-        </template>
-      </b-table>
-      <table-pagination
-        v-if="users.length"
-        ref="pagination"
-        :total-rows="users.length"
-        @on-pagination-change="onPaginationChange"
-      >
-      </table-pagination>
+      </users-table>
     </b-card-body>
     <user-modal />
   </b-card>
@@ -51,14 +23,13 @@
 
 <script>
 import UserModal from "./modals/UserModal";
+import UsersTable from "./components/UsersTable";
 import { createNamespacedHelpers } from "vuex";
-import TablePagination from "../../core/components/table-pagination/TablePagination";
-import NoContent from "../../core/components/no-content/NoContent";
 
 const { mapActions } = createNamespacedHelpers("users");
 export default {
   name: "Users",
-  components: { NoContent, TablePagination, UserModal },
+  components: { UsersTable, UserModal },
   data() {
     return {
       users: [],
@@ -77,29 +48,27 @@ export default {
       this.showUserModal();
     },
     onEditUserClick() {},
-    onDeleteUserClick() {},
-    onPaginationChange() {},
+    async onDeleteUserClick() {
+      const confirm = await this.$confirm(
+        "Are you sure you want to delete following user?",
+        "Deleting User"
+      );
+      if (confirm) {
+        console.log("User Deleted successfully");
+      }
+    },
   },
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .users {
   height: 100%;
   width: 100%;
-  //margin: 2rem;
 }
-
 .users-card-body {
-  background: white;
+  background: #e8e8e8;
   padding: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
-.page-content {
-  margin-left: 15%;
-  margin-right: 15%;
-  position: relative;
+  overflow: auto;
 }
 </style>

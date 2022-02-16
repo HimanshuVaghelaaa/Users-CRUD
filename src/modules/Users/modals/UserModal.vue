@@ -1,5 +1,5 @@
 <template>
-  <ValidationObserver ref="employee-modal" v-slot="{ handleSubmit }">
+  <ValidationObserver ref="user-modal" v-slot="{ handleSubmit }">
     <b-modal
       v-model="modal.show"
       title="Create User"

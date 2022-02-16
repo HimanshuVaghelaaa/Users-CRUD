@@ -35,7 +35,7 @@ export default {
     return {
       perPage: 50,
       currentPage: 1,
-      perPageOptions: [5, 10, 20, 50, 100],
+      perPageOptions: [1, 10, 20, 50, 100],
     };
   },
   computed: {
