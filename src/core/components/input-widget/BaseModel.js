@@ -16,7 +16,7 @@ export default class BaseModel {
     email: "The email field must be a valid email",
     regex: "Value does not match the pattern",
     confirmed: "Passwords do not match",
-    min: function (name, rule) {
+    min: function(name, rule) {
       return `The field must be ${rule.length} or more`;
     },
   };

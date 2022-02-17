@@ -3,7 +3,10 @@ const STATE = {
     show: false,
   },
   editUser: null,
-  perPage: 50,
+  users: [],
+  tableLoading: false,
+  editPageLoading: false,
+  perPage: null,
 };
 
 export default STATE;

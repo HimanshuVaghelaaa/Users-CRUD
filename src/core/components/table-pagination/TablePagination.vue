@@ -22,8 +22,8 @@
 
 <script>
 import { createNamespacedHelpers } from "vuex";
-const { mapState, mapActions } = createNamespacedHelpers("users");
 
+const { mapState, mapActions } = createNamespacedHelpers("users");
 export default {
   name: "TablePagination",
   props: {
@@ -61,7 +61,9 @@ export default {
     },
   },
   mounted() {
-    this.localePerPage = this.perPage;
+    if (this.perPage) {
+      this.localePerPage = this.perPage;
+    }
   },
 };
 </script>

@@ -42,8 +42,8 @@ import TablePagination from "../../../core/components/table-pagination/TablePagi
 import NoContent from "../../../core/components/no-content/NoContent";
 import _ from "lodash";
 import { createNamespacedHelpers } from "vuex";
-const { mapState } = createNamespacedHelpers("users");
 
+const { mapState } = createNamespacedHelpers("users");
 export default {
   name: "UsersTable",
   components: { NoContent, TablePagination },
@@ -104,8 +104,9 @@ export default {
   height: 100%;
 }
 .table-responsive-sm {
-  height: 91%;
+  height: 100%;
   overflow: auto;
+
   > table {
     > thead {
       > tr {
@@ -113,18 +114,20 @@ export default {
           //position: sticky;
           //z-index: 10;
           //top: 0;
-          // padding: 6px;
+          //padding: 6px;
           white-space: nowrap;
+
           &:focus {
             outline: none;
           }
         }
       }
     }
+
     > tbody {
       > tr {
         > td {
-          // padding: 8px;
+          //padding: 8px;
           max-width: 150px;
           white-space: nowrap;
           overflow: hidden;

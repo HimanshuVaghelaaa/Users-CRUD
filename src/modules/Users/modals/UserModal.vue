@@ -4,7 +4,7 @@
       v-model="modal.show"
       title="Create User"
       size="lg"
-      @hide="onHideModal"
+      @hidden="onHideModal"
       @ok.prevent="handleSubmit(onSubmit)"
     >
       <b-form @keydown.enter.prevent="handleSubmit(onSubmit)">
@@ -62,6 +62,17 @@
                 />
               </div>
             </div>
+            <div class="row">
+              <div class="col-md-6">
+                <input-widget
+                  :model="model"
+                  attribute="image"
+                  type="file"
+                  :placeholder="'Choose image or drop here...'"
+                >
+                </input-widget>
+              </div>
+            </div>
           </div>
         </div>
       </b-form>
@@ -87,8 +98,16 @@ export default {
     ...mapState(["modal"]),
   },
   methods: {
-    ...mapActions(["hideUserModal"]),
-    onSubmit() {},
+    ...mapActions(["hideUserModal", "createNewUser"]),
+    async onSubmit() {
+      const { success } = await this.createNewUser(this.model.toJSON());
+      if (success) {
+        this.$toast("User created successfully");
+        this.onHideModal();
+      } else {
+        this.$toast("Unable to create user", "danger");
+      }
+    },
     onHideModal() {
       this.hideUserModal();
       setTimeout(() => {

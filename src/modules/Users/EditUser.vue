@@ -1,6 +1,7 @@
 <template>
   <ValidationObserver ref="user-modal" v-slot="{ handleSubmit }">
-    <b-card no-body style="width: 100%; height: 100%">
+    <view-spinner :show="editPageLoading" fullscreen />
+    <b-card v-if="!editPageLoading" no-body class="edit-card">
       <b-card-header>
         <div class="d-flex justify-content-between align-items-center">
           <b-button
@@ -11,7 +12,7 @@
             <i class="fas fa-chevron-left" />
             Back
           </b-button>
-          User ID: {{ model.uuid }}
+          User ID: {{ model.id }}
         </div>
       </b-card-header>
       <b-card-body>
@@ -71,10 +72,35 @@
                   />
                 </div>
               </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <input-widget
+                    :model="model"
+                    attribute="image"
+                    type="file"
+                    :placeholder="'Choose image or drop here...'"
+                  >
+                  </input-widget>
+                </div>
+              </div>
             </div>
           </div>
         </b-form>
       </b-card-body>
+      <b-card-footer>
+        <div class="float-right">
+          <b-button
+            variant="danger"
+            class="mr-2"
+            @click="$router.push({ name: 'users' })"
+          >
+            Cancel
+          </b-button>
+          <b-button variant="info" class="mr-2" @click="onSubmit">
+            Submit
+          </b-button>
+        </div>
+      </b-card-footer>
     </b-card>
   </ValidationObserver>
 </template>
@@ -83,29 +109,45 @@
 import UserModel from "./models/UserModel";
 import InputWidget from "../../core/components/input-widget/InputWidget";
 import { createNamespacedHelpers } from "vuex";
+import ViewSpinner from "../../core/components/view-spinner/view-spinner";
+
 const { mapState, mapActions } = createNamespacedHelpers("users");
 export default {
   name: "EditUser",
-  components: { InputWidget },
+  components: { ViewSpinner, InputWidget },
   data() {
     return {
       model: new UserModel(),
     };
   },
   computed: {
-    ...mapState(["editUser"]),
+    ...mapState(["editUser", "editPageLoading"]),
+  },
+  watch: {
+    editUser() {
+      if (this.editUser) {
+        this.model = new UserModel(this.editUser);
+      }
+    },
   },
   methods: {
-    ...mapActions(["getDataByUser"]),
-    onSubmit() {},
+    ...mapActions(["getDataByUser", "updateUser"]),
+    async onSubmit() {
+      const { success } = await this.updateUser(this.model.toJSON());
+      if (success) {
+        this.$toast("User updated successfully");
+        await this.$router.push({ name: "users" });
+      } else {
+        this.$toast("Unable to update user", "danger");
+      }
+    },
   },
-  async mounted() {
-    await this.getDataByUser(this.$route.params.userUuid);
-    this.model = new UserModel(this.editUser);
+  mounted() {
+    this.getDataByUser(this.$route.params.userId);
   },
 };
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .edit-card {
   width: 100%;
   height: 100%;

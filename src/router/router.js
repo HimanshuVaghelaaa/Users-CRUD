@@ -22,7 +22,7 @@ const router = new VueRouter({
           component: Users,
         },
         {
-          path: "users/update/:userUuid",
+          path: "users/update/:userId",
           name: "updateUser",
           component: EditUser,
         },

@@ -1,7 +1,7 @@
 import BaseModel from "../../../core/components/input-widget/BaseModel";
 
 export default class UserModel extends BaseModel {
-  uuid = null;
+  id = null;
   name = null;
   surname = null;
   email = null;
@@ -10,6 +10,7 @@ export default class UserModel extends BaseModel {
   phone = null;
   phone_country_code = null;
   image = null;
+  imageBase64 = null;
 
   rules = {
     name: "required",

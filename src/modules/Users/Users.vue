@@ -9,7 +9,9 @@
       </div>
     </b-card-header>
     <b-card-body class="users-card-body pr-3 pl-3 pt-3">
+      <view-spinner :show="tableLoading" />
       <users-table
+        v-if="!tableLoading"
         :fields="fields"
         :items="users"
         @on-delete-click="onDeleteUserClick"
@@ -23,16 +25,16 @@
 
 <script>
 import UserModal from "./modals/UserModal";
-import UsersTable from "./components/UsersTable";
 import { createNamespacedHelpers } from "vuex";
+import UsersTable from "./components/UsersTable";
+import ViewSpinner from "../../core/components/view-spinner/view-spinner";
 
-const { mapActions } = createNamespacedHelpers("users");
+const { mapActions, mapState } = createNamespacedHelpers("users");
 export default {
   name: "Users",
-  components: { UsersTable, UserModal },
+  components: { ViewSpinner, UsersTable, UserModal },
   data() {
     return {
-      users: [],
       fields: [
         { key: "name", label: "Name" },
         { key: "surname", label: "Surname" },
@@ -42,26 +44,34 @@ export default {
       ],
     };
   },
+  computed: {
+    ...mapState(["users", "tableLoading"]),
+  },
   methods: {
-    ...mapActions(["showUserModal"]),
+    ...mapActions(["showUserModal", "getUsersData", "deleteUser"]),
     onCreateUserClick() {
       this.showUserModal();
     },
     onEditUserClick(item) {
-      this.$router.push({
-        name: "updateUser",
-        params: { userUuid: item.uuid },
-      });
+      this.$router.push({ name: "updateUser", params: { userId: item.id } });
     },
-    async onDeleteUserClick() {
+    async onDeleteUserClick(item) {
       const confirm = await this.$confirm(
         "Are you sure you want to delete following user?",
         "Deleting User"
       );
       if (confirm) {
-        console.log("User Deleted successfully");
+        const { success } = await this.deleteUser(item.id);
+        if (success) {
+          this.$toast("User deleted successfully");
+        } else {
+          this.$toast("Unable to delete user", "danger");
+        }
       }
     },
+  },
+  mounted() {
+    this.getUsersData();
   },
 };
 </script>

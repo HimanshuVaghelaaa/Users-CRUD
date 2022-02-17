@@ -93,6 +93,24 @@
         {{ computedHint }}
       </b-form-text>
     </b-form-group>
+    <b-form-group v-if="isFileUpload()">
+      <label v-if="computedLabel">
+        {{ computedLabel }}
+        <span v-if="v.required" class="text-danger">*</span>
+      </label>
+      <b-form-file
+        v-model="model[attribute]"
+        :type="type"
+        :placeholder="computedPlaceholder"
+        :state="getState(v)"
+        :multiple="multiple"
+        :file-name-formatter="formatNames"
+      >
+      </b-form-file>
+      <b-form-invalid-feedback :state="getState(v)">
+        {{ getError(v.errors) }}
+      </b-form-invalid-feedback>
+    </b-form-group>
   </ValidationProvider>
 </template>
 
@@ -168,6 +186,13 @@ export default {
       type: [String, Number],
       default: 0,
     },
+    multiple: {
+      type: Boolean,
+      default: false,
+    },
+    formatNames: {
+      type: Function,
+    },
   },
   data() {
     return {
@@ -242,6 +267,9 @@ export default {
     },
     isTextarea() {
       return this.type === "textarea";
+    },
+    isFileUpload() {
+      return this.type === "file";
     },
     onChange(val) {
       if (this.type === "number" && val === "") {
